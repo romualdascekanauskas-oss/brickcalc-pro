@@ -6,6 +6,73 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#14243a">
 <title>BrickCalc Pro</title>
+
+/* BRICKCALC PRO - PREMIUM DESIGN */
+:root {
+  --navy: #101b2b;
+  --navy-light: #1b2a40;
+  --gold: #d5a441;
+  --gold-light: #f0cc78;
+  --surface: #ffffff;
+  --background: #f2f4f7;
+  --text: #172338;
+  --muted: #718096;
+  --border: #e1e6ed;
+}
+
+body {
+  background: var(--background) !important;
+  color: var(--text);
+  font-family: Inter, Arial, sans-serif;
+}
+
+header, .header, .app-header {
+  background: linear-gradient(135deg, #101b2b, #243650) !important;
+  color: white !important;
+  border-bottom: 3px solid var(--gold);
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.4px;
+}
+
+button, .button, input[type="submit"] {
+  background: var(--navy) !important;
+  color: white !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px;
+  font-weight: 700;
+}
+
+button:active {
+  background: #263b56 !important;
+}
+
+input, select, textarea {
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  background: white;
+  color: var(--text);
+}
+
+.card, .panel, .calculator, .tab-content {
+  border-radius: 16px;
+}
+
+nav, .tabs {
+  border-color: var(--border);
+}
+
+label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f2f4f7;color:#172337;font-family:Arial,sans-serif}
