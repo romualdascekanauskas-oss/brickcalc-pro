@@ -1,0 +1,12 @@
+
+{
+  "name": "BrickCalc Pro",
+  "short_name": "BrickCalc",
+  "description": "Professional UK construction calculators",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f4f7",
+  "theme_color": "#14243a"
+}
