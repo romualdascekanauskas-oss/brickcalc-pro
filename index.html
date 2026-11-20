@@ -1,1 +1,478 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101b2b">
+<meta name="description" content="Professional UK bricklaying and construction calculator">
+<link rel="manifest" href="./manifest.json">
+<title>BrickCalc Pro</title>
+
+<style>
+:root {
+  --navy:#101b2b;
+  --navy2:#1c2d43;
+  --gold:#d5a441;
+  --bg:#f1f3f6;
+  --white:#fff;
+  --text:#182538;
+  --muted:#718096;
+  --border:#e4e8ee;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header {
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  color:white;
+  padding:25px 20px 22px;
+  border-bottom:4px solid var(--gold);
+}
+.brand {font-size:24px;font-weight:800;letter-spacing:1px}
+.brand span {color:var(--gold)}
+.tagline {font-size:12px;color:#c4cedb;margin-top:5px}
+main {max-width:700px;margin:auto;padding:16px}
+h2 {font-size:19px;margin:8px 0 15px}
+h3 {font-size:15px;margin:0 0 12px}
+.tabs {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:17px;
+}
+.tab {
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 5px;
+  background:white;
+  color:var(--navy);
+  font-size:12px;
+  font-weight:700;
+}
+.tab.active {
+  background:var(--navy);
+  color:white;
+  border-color:var(--gold);
+}
+.panel {
+  display:none;
+  background:white;
+  padding:18px;
+  border-radius:16px;
+  box-shadow:0 3px 14px #14243a0b;
+  margin-bottom:15px;
+}
+.panel.active {display:block}
+.field {margin-bottom:14px}
+label {
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+input,select {
+  width:100%;
+  padding:13px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#fff;
+  font-size:16px;
+  color:var(--text);
+}
+input:focus,select:focus {
+  outline:2px solid #d5a44166;
+  border-color:var(--gold);
+}
+.grid2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.btn {
+  width:100%;
+  padding:14px;
+  border:1px solid var(--gold);
+  border-radius:11px;
+  background:var(--navy);
+  color:white;
+  font-weight:700;
+  font-size:15px;
+  margin-top:5px;
+}
+.btn.secondary {
+  background:white;
+  color:var(--navy);
+  border:1px solid var(--border);
+}
+.result {
+  background:var(--navy);
+  color:white;
+  padding:18px;
+  border-radius:13px;
+  margin-top:17px;
+  display:none;
+}
+.result .big {
+  font-size:30px;
+  font-weight:800;
+  color:var(--gold);
+  margin:7px 0;
+}
+.result small {color:#c4cedb}
+.result p {margin:7px 0;font-size:14px}
+.note {
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-top:12px;
+}
+.job {
+  border:1px solid var(--border);
+  padding:13px;
+  border-radius:11px;
+  margin:10px 0;
+}
+.job strong {display:block;margin-bottom:5px}
+.job small {color:var(--muted)}
+.delete {
+  color:#b42318;
+  border:0;
+  background:none;
+  padding:8px 0;
+  font-weight:700;
+}
+footer {
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+  padding:20px 5px;
+}
+@media(max-width:380px) {
+  .grid2 {gap:8px}
+  main {padding:11px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">BRICKCALC <span>PRO</span></div>
+  <div class="tagline">PROFESSIONAL CONSTRUCTION CALCULATORS</div>
+</header>
+
+<main>
+  <h2>Construction Calculator</h2>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('bricks',this)">🧱 Bricks</button>
+    <button class="tab" onclick="showTab('blocks',this)">Blocks</button>
+    <button class="tab" onclick="showTab('mortar',this)">Mortar</button>
+    <button class="tab" onclick="showTab('quote',this)">Quotation</button>
+    <button class="tab" onclick="showTab('jobs',this)">Saved jobs</button>
+    <button class="tab" onclick="showTab('about',this)">About</button>
+  </div>
+
+  <section class="panel active" id="bricks">
+    <h3>Brick quantity calculator</h3>
+    <div class="grid2">
+      <div class="field">
+        <label>Wall length (metres)</label>
+        <input id="bl" type="number" min="0" step="0.01" value="10">
+      </div>
+      <div class="field">
+        <label>Wall height (metres)</label>
+        <input id="bh" type="number" min="0" step="0.01" value="2">
+      </div>
+      <div class="field">
+        <label>Brick length (mm)</label>
+        <input id="bsizeL" type="number" value="215">
+      </div>
+      <div class="field">
+        <label>Brick height (mm)</label>
+        <input id="bsizeH" type="number" value="65">
+      </div>
+      <div class="field">
+        <label>Mortar joint (mm)</label>
+        <input id="bj" type="number" value="10">
+      </div>
+      <div class="field">
+        <label>Waste allowance (%)</label>
+        <input id="bw" type="number" value="5">
+      </div>
+    </div>
+    <div class="field">
+      <label>Openings area to deduct (m²)</label>
+      <input id="bo" type="number" min="0" step="0.01" value="0">
+    </div>
+    <button class="btn" onclick="calcBricks()">Calculate bricks</button>
+    <div class="result" id="brickResult"></div>
+    <button class="btn secondary" onclick="saveResult('brickResult','Brick calculation')">Save this job</button>
+  </section>
+
+  <section class="panel" id="blocks">
+    <h3>Block quantity calculator</h3>
+    <div class="grid2">
+      <div class="field">
+        <label>Wall length (metres)</label>
+        <input id="cl" type="number" value="10" min="0">
+      </div>
+      <div class="field">
+        <label>Wall height (metres)</label>
+        <input id="ch" type="number" value="2" min="0">
+      </div>
+      <div class="field">
+        <label>Block length (mm)</label>
+        <input id="cs" type="number" value="440">
+      </div>
+      <div class="field">
+        <label>Block height (mm)</label>
+        <input id="ct" type="number" value="215">
+      </div>
+      <div class="field">
+        <label>Waste allowance (%)</label>
+        <input id="cw" type="number" value="5">
+      </div>
+      <div class="field">
+        <label>Openings (m²)</label>
+        <input id="co" type="number" value="0" min="0">
+      </div>
+    </div>
+    <button class="btn" onclick="calcBlocks()">Calculate blocks</button>
+    <div class="result" id="blockResult"></div>
+    <button class="btn secondary" onclick="saveResult('blockResult','Block calculation')">Save this job</button>
+  </section>
+
+  <section class="panel" id="mortar">
+    <h3>Mortar volume estimator</h3>
+    <div class="field">
+      <label>Wall area (m²)</label>
+      <input id="ma" type="number" value="20" min="0">
+    </div>
+    <div class="field">
+      <label>Wall type</label>
+      <select id="mt">
+        <option value="0.018">Brickwork - half brick (102.5mm)</option>
+        <option value="0.035">Brickwork - one brick (215mm)</option>
+        <option value="0.010">100mm blockwork</option>
+        <option value="0.020">215mm blockwork</option>
+      </select>
+    </div>
+    <button class="btn" onclick="calcMortar()">Estimate mortar</button>
+    <div class="result" id="mortarResult"></div>
+    <p class="note">Indicative mortar allowance only. Actual consumption varies with unit dimensions, joint thickness, workmanship and site conditions.</p>
+    <button class="btn secondary" onclick="saveResult('mortarResult','Mortar estimate')">Save this job</button>
+  </section>
+
+  <section class="panel" id="quote">
+    <h3>Professional quotation calculator</h3>
+    <div class="field">
+      <label>Customer / job name</label>
+      <input id="qn" placeholder="e.g. Smith - Garden wall">
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label>Materials (£)</label>
+        <input id="qm" type="number" value="500" min="0">
+      </div>
+      <div class="field">
+        <label>Labour (£)</label>
+        <input id="ql" type="number" value="700" min="0">
+      </div>
+      <div class="field">
+        <label>Other costs (£)</label>
+        <input id="qo" type="number" value="50" min="0">
+      </div>
+      <div class="field">
+        <label>Profit (%)</label>
+        <input id="qp" type="number" value="15" min="0">
+      </div>
+      <div class="field">
+        <label>VAT (%)</label>
+        <select id="qv">
+          <option value="0">0% - Not added</option>
+          <option value="5">5%</option>
+          <option value="20">20%</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" onclick="calcQuote()">Calculate quotation</button>
+    <div class="result" id="quoteResult"></div>
+    <button class="btn secondary" onclick="saveResult('quoteResult','Quotation')">Save quotation</button>
+  </section>
+
+  <section class="panel" id="jobs">
+    <h3>Your saved jobs</h3>
+    <p class="note">Jobs are stored on this device using local storage. They are not automatically backed up online.</p>
+    <div id="jobList"></div>
+    <button class="btn secondary" onclick="clearJobs()">Delete all saved jobs</button>
+  </section>
+
+  <section class="panel" id="about">
+    <h3>About BrickCalc Pro</h3>
+    <p>Professional construction calculators designed for UK bricklayers, builders and tradespeople.</p>
+    <p><strong>Version:</strong> 2.0 Premium</p>
+    <p><strong>Designed for:</strong> UK construction trades</p>
+    <p class="note">Always check estimates against actual dimensions, drawings, material specifications and supplier information before ordering or quoting.</p>
+  </section>
+
+  <footer>BRICKCALC PRO · BUILT FOR THE TRADE</footer>
+</main>
+
+<script>
+function showTab(id,button) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  button.classList.add('active');
+  if(id==='jobs') renderJobs();
+}
+
+function num(id) {
+  return Number(document.getElementById(id).value);
+}
+function validPositive(...values) {
+  return values.every(v=>Number.isFinite(v)&&v>=0);
+}
+function money(v) {
+  return new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(v);
+}
+function showResult(id,html) {
+  const el=document.getElementById(id);
+  el.innerHTML=html;
+  el.style.display='block';
+}
+
+function calcBricks() {
+  const l=num('bl'),h=num('bh'),a=num('bo');
+  const sl=num('bsizeL'),sh=num('bsizeH'),j=num('bj'),w=num('bw');
+  if(!validPositive(l,h,a,sl,sh,j,w)||sl+j===0||sh+j===0||w>100) {
+    alert('Please check your measurements and waste allowance.');
+    return;
+  }
+  const area=l*h-a;
+  if(area<=0){alert('Wall area must be greater than openings.');return;}
+  const rate=1000000/((sl+j)*(sh+j));
+  const base=area*rate;
+  const total=Math.ceil(base*(1+w/100));
+  showResult('brickResult',`
+    <small>Estimated quantity including waste</small>
+    <div class="big">${total.toLocaleString('en-GB')} bricks</div>
+    <p>Net wall area: ${area.toFixed(2)} m²</p>
+    <p>Approximate bricks per m²: ${rate.toFixed(1)}</p>
+    <p>Before waste: ${Math.ceil(base).toLocaleString('en-GB')}</p>
+    <p>Waste allowance: ${w}%</p>`);
+}
+
+function calcBlocks() {
+  const l=num('cl'),h=num('ch'),sl=num('cs'),sh=num('ct'),w=num('cw'),a=num('co');
+  if(!validPositive(l,h,sl,sh,w,a)||sl===0||sh===0||w>100) {
+    alert('Please check your measurements and waste allowance.');
+    return;
+  }
+  const area=l*h-a;
+  if(area<=0){alert('Wall area must be greater than openings.');return;}
+  const rate=1000000/(sl*sh);
+  const base=area*rate;
+  const total=Math.ceil(base*(1+w/100));
+  showResult('blockResult',`
+    <small>Estimated quantity including waste</small>
+    <div class="big">${total.toLocaleString('en-GB')} blocks</div>
+    <p>Net wall area: ${area.toFixed(2)} m²</p>
+    <p>Approximate blocks per m²: ${rate.toFixed(1)}</p>
+    <p>Before waste: ${Math.ceil(base).toLocaleString('en-GB')}</p>
+    <p>Waste allowance: ${w}%</p>`);
+}
+
+function calcMortar() {
+  const area=num('ma'),rate=num('mt');
+  if(!validPositive(area,rate)||area===0){alert('Enter a valid wall area.');return;}
+  const volume=area*rate;
+  showResult('mortarResult',`
+    <small>Indicative wet mortar volume</small>
+    <div class="big">${volume.toFixed(3)} m³</div>
+    <p>Wall area: ${area.toFixed(2)} m²</p>
+    <p>Allowance: ${(rate*1000).toFixed(0)} litres per m²</p>
+    <p>Approximate volume: ${(volume*1000).toFixed(0)} litres</p>`);
+}
+
+function calcQuote() {
+  const name=document.getElementById('qn').value.trim();
+  const m=num('qm'),l=num('ql'),o=num('qo'),p=num('qp'),v=num('qv');
+  if(!validPositive(m,l,o,p,v)||p>500){alert('Please check your costs and percentages.');return;}
+  const costs=m+l+o;
+  const profit=costs*p/100;
+  const subtotal=costs+profit;
+  const vat=subtotal*v/100;
+  const total=subtotal+vat;
+  showResult('quoteResult',`
+    <small>${name||'Your quotation'} · Total including VAT</small>
+    <div class="big">${money(total)}</div>
+    <p>Materials: ${money(m)}</p>
+    <p>Labour: ${money(l)}</p>
+    <p>Other costs: ${money(o)}</p>
+    <p>Cost total: ${money(costs)}</p>
+    <p>Profit (${p}%): ${money(profit)}</p>
+    <p>Subtotal: ${money(subtotal)}</p>
+    <p>VAT (${v}%): ${money(vat)}</p>
+    <p><strong>Quotation total: ${money(total)}</strong></p>`);
+}
+
+function saveResult(id,type) {
+  const el=document.getElementById(id);
+  if(el.style.display==='none'||!el.innerHTML.trim()){
+    alert('Calculate first, then save your job.');
+    return;
+  }
+  const jobs=JSON.parse(localStorage.getItem('brickcalcJobs')||'[]');
+  jobs.unshift({
+    id:Date.now(),
+    type,
+    name:document.getElementById('qn')?.value.trim()||type,
+    date:new Date().toLocaleDateString('en-GB'),
+    result:el.innerText
+  });
+  localStorage.setItem('brickcalcJobs',JSON.stringify(jobs));
+  alert('Job saved on this device.');
+}
+
+function renderJobs() {
+  const jobs=JSON.parse(localStorage.getItem('brickcalcJobs')||'[]');
+  const list=document.getElementById('jobList');
+  if(!jobs.length){list.innerHTML='<p class="note">No saved jobs yet.</p>';return;}
+  list.innerHTML=jobs.map(j=>`
+    <div class="job">
+      <strong>${escapeHTML(j.name||j.type)}</strong>
+      <small>${escapeHTML(j.type)} · ${escapeHTML(j.date)}</small>
+      <p>${escapeHTML(j.result)}</p>
+      <button class="delete" onclick="deleteJob(${j.id})">Delete job</button>
+    </div>`).join('');
+}
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function deleteJob(id) {
+  const jobs=JSON.parse(localStorage.getItem('brickcalcJobs')||'[]').filter(j=>j.id!==id);
+  localStorage.setItem('brickcalcJobs',JSON.stringify(jobs));
+  renderJobs();
+}
+function clearJobs() {
+  if(confirm('Delete all saved jobs on this device?')){
+    localStorage.removeItem('brickcalcJobs');
+    renderJobs();
+  }
+}
+
+if('serviceWorker' in navigator) {
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
