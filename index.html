@@ -1,1 +1,183 @@
-m <!DOCTYPE html> to </html>.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#14243a">
+<title>BrickCalc Pro</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f2f4f7;color:#172337;font-family:Arial,sans-serif}
+header{background:#14243a;color:white;padding:25px 18px}
+header h1{margin:0;font-size:27px}
+header p{color:#c5cfda;font-size:13px}
+main{padding:15px;max-width:650px;margin:auto}
+.tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:15px}
+button{padding:13px;border:0;border-radius:8px;background:#c28b3c;color:white;font-weight:bold;font-size:15px}
+.tabs button{background:#dce3eb;color:#14243a}
+.tabs button.active{background:#14243a;color:white}
+.card{background:white;border-radius:12px;padding:17px;margin-bottom:15px}
+h2{font-size:18px}
+label{display:block;font-size:13px;font-weight:bold;margin:13px 0 6px}
+input,select{width:100%;padding:12px;border:1px solid #ccd4df;border-radius:8px;font-size:16px}
+.calc{width:100%;margin-top:16px}
+.section{display:none}
+.section.active{display:block}
+.result{background:#edf3f8;padding:14px;margin-top:13px;border-radius:8px;line-height:1.9}
+.big{font-size:24px;font-weight:bold;color:#14243a}
+.secondary{background:#14243a;width:100%;margin-top:12px}
+footer{text-align:center;color:#68778a;padding:20px;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<h1>BRICKCALC PRO</h1>
+<p>Professional UK Construction Calculators</p>
+</header>
+<main>
+<div class="tabs">
+<button class="active" onclick="show('brick',this)">Bricks</button>
+<button onclick="show('block',this)">Blocks</button>
+<button onclick="show('mortar',this)">Mortar</button>
+<button onclick="show('quote',this)">Quotations</button>
+<button onclick="show('jobs',this)">Saved Jobs</button>
+</div>
+
+<section id="brick" class="section active">
+<div class="card">
+<h2>Brick Calculator</h2>
+<label>Wall length (metres)</label>
+<input id="bl" type="number" value="10">
+<label>Wall height (metres)</label>
+<input id="bh" type="number" value="2">
+<label>Wall thickness</label>
+<select id="bt">
+<option value="1">Half brick</option>
+<option value="2">One brick</option>
+</select>
+<label>Waste allowance (%)</label>
+<input id="bw" type="number" value="5">
+<button class="calc" onclick="bricks()">Calculate bricks</button>
+<div id="br" class="result">Enter wall measurements.</div>
+</div>
+</section>
+
+<section id="block" class="section">
+<div class="card">
+<h2>Block Calculator</h2>
+<label>Wall length (metres)</label>
+<input id="xl" type="number" value="10">
+<label>Wall height (metres)</label>
+<input id="xh" type="number" value="2">
+<label>Block length (mm)</label>
+<input id="xw" type="number" value="440">
+<label>Block height (mm)</label>
+<input id="xz" type="number" value="215">
+<label>Waste allowance (%)</label>
+<input id="xv" type="number" value="5">
+<button class="calc" onclick="blocks()">Calculate blocks</button>
+<div id="xr" class="result">Enter measurements.</div>
+</div>
+</section>
+
+<section id="mortar" class="section">
+<div class="card">
+<h2>Mortar Calculator</h2>
+<label>Number of bricks</label>
+<input id="mb" type="number" value="500">
+<label>Number of blocks</label>
+<input id="mk" type="number" value="0">
+<button class="calc" onclick="mortar()">Estimate mortar</button>
+<div id="mr" class="result">Enter quantities.</div>
+<small>Approximate planning estimate only.</small>
+</div>
+</section>
+
+<section id="quote" class="section">
+<div class="card">
+<h2>Quotation Calculator</h2>
+<label>Job name / customer</label>
+<input id="customer" placeholder="Customer name">
+<label>Material cost (£)</label>
+<input id="mat" type="number" value="500">
+<label>Labour rate (£ per m²)</label>
+<input id="rate" type="number" value="35">
+<label>Wall area (m²)</label>
+<input id="area" type="number" value="20">
+<label>Other costs (£)</label>
+<input id="other" type="number" value="0">
+<label>Profit margin (%)</label>
+<input id="profit" type="number" value="15">
+<label>VAT (%)</label>
+<input id="vat" type="number" value="0">
+<button class="calc" onclick="quote()">Calculate quotation</button>
+<div id="qr" class="result">Enter job costs.</div>
+<button class="secondary" onclick="save()">Save quotation</button>
+</div>
+</section>
+
+<section id="jobs" class="section">
+<div class="card">
+<h2>Saved Jobs</h2>
+<div id="joblist">No saved jobs yet.</div>
+<button class="secondary" onclick="listJobs()">Refresh jobs</button>
+</div>
+</section>
+</main>
+<footer>BRICKCALC PRO · Version 1.0</footer>
+
+<script>
+let total=0;
+function show(id,b){
+document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+b.classList.add('active');
+if(id==='jobs')listJobs();
+}
+function v(id){return Number(document.getElementById(id).value)||0}
+function money(n){return '£'+n.toFixed(2)}
+function bricks(){
+let a=v('bl')*v('bh'),base=a*60*v('bt');
+let n=Math.ceil(base*(1+v('bw')/100));
+document.getElementById('br').innerHTML='Wall area: '+a.toFixed(2)+' m²<br>Before waste: '+Math.ceil(base)+'<br><span class="big">'+n.toLocaleString()+' bricks</span>';
+}
+function blocks(){
+let a=v('xl')*v('xh'),w=v('xw'),h=v('xz');
+if(a<=0||w<=0||h<=0)return;
+let base=a/(((w+10)/1000)*((h+10)/1000));
+let n=Math.ceil(base*(1+v('xv')/100));
+document.getElementById('xr').innerHTML='Wall area: '+a.toFixed(2)+' m²<br>Before waste: '+Math.ceil(base)+'<br><span class="big">'+n.toLocaleString()+' blocks</span>';
+}
+function mortar(){
+let b=v('mb'),k=v('mk');
+let volume=b*0.0005+k*0.001;
+document.getElementById('mr').innerHTML='Estimated mortar: <b>'+volume.toFixed(3)+' m³</b><br>Approximate 25kg bags: <b>'+Math.ceil(volume/0.015)+'</b>';
+}
+function quote(){
+let material=v('mat'),labour=v('rate')*v('area'),other=v('other');
+let sub=material+labour+other;
+let p=sub*v('profit')/100,net=sub+p,tax=net*v('vat')/100;
+total=net+tax;
+document.getElementById('qr').innerHTML='Materials: '+money(material)+'<br>Labour: '+money(labour)+'<br>Other: '+money(other)+'<br>Profit: '+money(p)+'<br>Subtotal: '+money(net)+'<br>VAT: '+money(tax)+'<hr><span class="big">'+money(total)+'</span><br>Quotation total';
+}
+function save(){
+let name=document.getElementById('customer').value.trim();
+if(!name||total<=0){alert('Enter customer name and calculate quotation first.');return;}
+let jobs=JSON.parse(localStorage.getItem('brickJobs')||'[]');
+jobs.push({name,date:new Date().toLocaleDateString('en-GB'),total});
+localStorage.setItem('brickJobs',JSON.stringify(jobs));
+alert('Quotation saved!');
+}
+function listJobs(){
+let jobs=JSON.parse(localStorage.getItem('brickJobs')||'[]');
+document.getElementById('joblist').innerHTML=jobs.length?jobs.map(j=>'<div class="result"><b>'+safe(j.name)+'</b><br>'+j.date+'<br>'+money(j.total)+'</div>').join(''):'No saved jobs yet.';
+}
+function safe(s){
+return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>
+
